@@ -17,12 +17,12 @@ class HitLinesProvider:
     def __init__(self):
         self.df_repository = DfRepositoryProvider.provide()
 
-        self.all_hit_lines_df = self.df_repository.get(Configuration.HIT_LINES_SINGLE_3RP_DF)
+        self.all_hit_lines_df = self.df_repository.get(Configuration.HIT_LINES_DF)
         self.geom_silicon_df = self.df_repository.get(Configuration.GEOM_SILICON_DF)
 
     def provide(self, event_id, group_id):
         current_hits_df = self.extract_current_hits_df(event_id, group_id)
-        hit_lines = self.extract_lines(current_hits_df)
+        hit_lines = self.create_lines(current_hits_df)
         self.apply_transformations(hit_lines)
         return hit_lines
 
@@ -30,7 +30,7 @@ class HitLinesProvider:
         return self.all_hit_lines_df[(self.all_hit_lines_df['eventID'] == event_id) &
                                      (self.all_hit_lines_df['groupID'] == group_id)]
 
-    def get_extract_lines(self, current_hits_df):
+    def create_lines(self, current_hits_df):
         lines = []
 
         for idx, hit_info in current_hits_df.iterrows():
@@ -57,7 +57,7 @@ class HitLinesProvider:
                 line.z = line.z * 1000
 
         if HitLinesProviderConfig.TRANSLATE_LINES:
-            self.set_lowest_abs_silicon_z(hit_lines)
+            set_lowest_abs_silicon_z(hit_lines)
 
             for line in hit_lines:
                 line.z = line.z - HitLinesProviderConfig.LOWEST_ABS_SILICON_Z

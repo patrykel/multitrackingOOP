@@ -1,9 +1,16 @@
 
-df_repository = DfRepository()  # initialize dataframe repository
-                                # może nie jest to potrzebne ;)
+from multitracking.algorithm.MinimizationBasedAlgorithm import *
+from multitracking.algorithm.LeastSquaresBasedAlgorithm import *
+from multitracking.track_dataframes.TrackDfProvider import *
 
-ml = MultitrackingAlgorithm() # tu musze dać jakiś kontrakt -->
-htp = HonzaTrackProivder()
+# algorithm = MinimizationBasedAlgorithm()
+algorithm = LeastSquaresBasedAlgorithm()
 
-multitrack_df = ml.tracks_as_df()
-honza_tracks_df = htp.tracks_as_df()
+algorithm.run()
+
+tracks_df_provider = TrackDfProvider.get_track_df_provider()
+track_df = tracks_df_provider.provide()
+
+
+print("Code")
+print("Works")

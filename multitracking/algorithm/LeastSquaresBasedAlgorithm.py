@@ -5,10 +5,10 @@ from multitracking.track_dataframes.TrackRecord import *
 from multitracking.track_dataframes.TrackDfProvider import *
 from dataframes.DfRepositoryProvider import *
 from dataframes.Configuration import *
-from scipy.optimize import minimize
+from scipy.optimize import least_squares
 import time
 
-class MinimizationBasedAlgorithm(MultitrackingAlgorithm):
+class LeastSquaresBasedAlgorithm(MultitrackingAlgorithm):
     # Jego zadanie:
     # Input: ...
     # Output: TrackRecordList
@@ -43,10 +43,11 @@ class MinimizationBasedAlgorithm(MultitrackingAlgorithm):
 
         minimize_methods = OptimizationConfig.get_minimize_methods()
         x0 = OptimizationConfig.get_x0(arm_id)
-        constraints = OptimizationConfig.get_constraints()
-        bounds = OptimizationConfig.get_minimize_bounds()
+        bounds = OptimizationConfig.get_least_squares_bounds()
 
-        solution, method, exec_time = compute_solution_track(x0, constraints, bounds, minimize_methods)
+        solution, method, exec_time = compute_solution_track(x0, bounds)
+
+
 
         # TODO: Normalize solution unit vector (dx, dy, dz)
         # TODO: Normalize solution to get propper (x,y,z)
@@ -67,14 +68,11 @@ def objective(params):
     return np.sum([line.distance(other) for other in HIT_LINES])  # Sum of distances
 
 
-def compute_solution_track(x0, constraints, bounds, minimize_methods):
+def compute_solution_track(x0, bounds):
+    method = 'trf (least squares method)'
+
     start_time = time.time()
-    for method in minimize_methods:
-        solution = minimize(objective, x0, method=method, constraints=constraints, bounds=bounds)
-
-        if solution.success:
-            break
-
+    solution = least_squares(objective, x0, bounds=bounds, jac='2-point', method='trf')
     exec_time = time.time() - start_time
 
     return solution, method, exec_time

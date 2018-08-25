@@ -9,9 +9,9 @@ class Configuration():
     DF_FILE_NAMES = [GEOM_RP_DF, GEOM_SILICON_DF, HIT_LINES_DF]
 
     FILES_TO_READ_DF = {
-        GEOM_RP_DF: "data_files/geom_rp.csv",
-        GEOM_SILICON_DF: "data_files/geom_silicon.csv",
-        HIT_LINES_DF: "data_files/hit_lines.csv"
+        GEOM_RP_DF: "dataframes/data_files/geom_rp.csv",
+        GEOM_SILICON_DF: "dataframes/data_files/geom_silicon.csv",
+        HIT_LINES_DF: "dataframes/data_files/hit_lines_18ev.csv"
     }
 
     @staticmethod
