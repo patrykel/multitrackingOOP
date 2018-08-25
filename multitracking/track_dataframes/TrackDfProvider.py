@@ -50,7 +50,7 @@ track_df_provider_singleton = TrackDfProvider()
 
 def get_column_names():
     track_data_columns = ['Translate', 'Event', 'Group', 'Method', 'TIME', 'DistSum', 'MDH', 'Success', 'Chi', 'ChiN',
-                        'x', 'y', 'z', 'dx', 'dy', 'dz',
+                        'x [mm]', 'y [mm]', 'z [mm]', 'dx', 'dy', 'dz',
                         'dx2+dy2+dz2', 'dx/dz angle [mili rad]', 'dy/dz angle [mili rad]',
                         'track_in_dets', 'track_out_dets']
 

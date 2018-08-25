@@ -64,6 +64,12 @@ class HitLinesProvider:
                 line.z = line.z + HitLinesProviderConfig.ADDITIONAL_TRANSLATION *\
                                   np.sign(HitLinesProviderConfig.LOWEST_ABS_SILICON_Z) # +/- 1
 
+    def normalize(self, hit_lines):
+        # For each hit_line, set z = line's related silicon z coordinate (in mm)
+        for line in hit_lines:
+            silicon_info = self.extract_silicon_info(line.silicon_id)
+            line.z = hit_line_z(silicon_info) * 1000
+
 
 def compute_silicon_id(hit_info):
     return 10 * hit_info['rpID'] + hit_info['siliconID']

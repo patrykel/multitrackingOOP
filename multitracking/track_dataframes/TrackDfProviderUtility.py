@@ -1,5 +1,6 @@
 from geometry_classes.Line import *
 from geometry_classes.RPSiliconInclusionTest import *
+from multitracking.algorithm.HitLinesProviderConfig import *
 
 import numpy as np
 
@@ -23,7 +24,8 @@ class TrackProviderDfUtility:
     # DISTANCES
     @staticmethod
     def get_distances(solution, hit_lines):
-        track = Line(params=solution.x)
+        # We assume that our track begins on z = LOWEST_ABS_SILICON_Z
+        track = Line(params=solution.x, z=HitLinesProviderConfig.LOWEST_ABS_SILICON_Z)
         return [track.distance(line) for line in hit_lines]
 
     @staticmethod
@@ -39,7 +41,8 @@ class TrackProviderDfUtility:
     # CHI_2
     @staticmethod
     def get_chi2(solution, hit_lines):
-        track = Line(params=solution.x)  # CREATING FITTED TRACK
+        # We assume that our track begins on z = LOWEST_ABS_SILICON_Z
+        track = Line(params=solution.x, z=HitLinesProviderConfig.LOWEST_ABS_SILICON_Z)
         return sum([(track.distance(hit_line) / SIGMA) ** 2 for hit_line in hit_lines])  # SUM OF DISTANCES
 
     @staticmethod
@@ -53,6 +56,7 @@ class TrackProviderDfUtility:
 
         if len(solution.x) == 5:
             x, y, dx, dy, dz = solution.x
+            z = HitLinesProviderConfig.LOWEST_ABS_SILICON_Z  # Cause we normalized solution!
         elif len(solution.x) == 6:
             x, y, z, dx, dy, dz = solution.x
 

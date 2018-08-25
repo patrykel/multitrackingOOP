@@ -8,5 +8,5 @@ class MultitrackingAlgorithm:
     def run(self):
         pass
 
-    def compute_track_record(self):
+    def compute_track_record(self, event_id, group_id):
         pass

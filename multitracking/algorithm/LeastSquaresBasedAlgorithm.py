@@ -1,6 +1,7 @@
 from multitracking.algorithm.MultitrackingAlgorithm import MultitrackingAlgorithm
 from multitracking.algorithm.OptimizationConfig import *
 from multitracking.algorithm.HitLinesProvider import *
+from multitracking.algorithm.SolutionNormalizator import *
 from multitracking.track_dataframes.TrackRecord import *
 from multitracking.track_dataframes.TrackDfProvider import *
 from dataframes.DfRepositoryProvider import *
@@ -47,10 +48,9 @@ class LeastSquaresBasedAlgorithm(MultitrackingAlgorithm):
 
         solution, method, exec_time = compute_solution_track(x0, bounds)
 
-
-
-        # TODO: Normalize solution unit vector (dx, dy, dz)
-        # TODO: Normalize solution to get propper (x,y,z)
+        # Normalize solution track and hit lines to come back to real coordinate system (not translated)
+        SolutionNormalizator.normalize(solution) # normalize vector, move solution x,y to z = lowest_det_z
+        self.hit_lines_provider.normalize(HIT_LINES)
 
         return TrackRecord(event_id, group_id, solution, method, exec_time)
 
