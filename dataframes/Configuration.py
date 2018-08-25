@@ -2,16 +2,18 @@
 class Configuration():
 
     # DATAFRAMES CREATED FROM FILES
+    AVG_DET_GEOM_DF = "avg_by_rp_and_direction"
     GEOM_RP_DF = "geom_rp_df"
     GEOM_SILICON_DF = "geom_silicon_df"
     HIT_LINES_DF = "hit_lines_df"
 
-    DF_FILE_NAMES = [GEOM_RP_DF, GEOM_SILICON_DF, HIT_LINES_DF]
+    DF_FILE_NAMES = [AVG_DET_GEOM_DF, GEOM_RP_DF, GEOM_SILICON_DF, HIT_LINES_DF]
 
     FILES_TO_READ_DF = {
+        AVG_DET_GEOM_DF: "dataframes/data_files/avg_by_rp_and_direction.csv",
         GEOM_RP_DF: "dataframes/data_files/geom_rp.csv",
         GEOM_SILICON_DF: "dataframes/data_files/geom_silicon.csv",
-        HIT_LINES_DF: "dataframes/data_files/hit_lines_18ev.csv"
+        HIT_LINES_DF: "dataframes/data_files/hit_lines_18ev.csv"   # to be changed - for now it only contains 18 events
     }
 
     @staticmethod
