@@ -29,8 +29,8 @@ class HonzaLinesProvider():
 
     def compute_all_event_lines(self):
         for event_id, group_id in self.event_group_list:
-            if event_id > 5:
-                break
+            # if event_id > 5:
+            #     break
 
             print("event: {} group: {}".format(event_id, group_id))
             honza_lines = self.compute_group_lines(event_id, group_id)

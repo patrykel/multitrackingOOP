@@ -37,6 +37,16 @@ class Line:
     def line_vector(self):
         return np.array([self.dx, self.dy, self.dz])
 
+    # TODO: Test that method
+    def xy_on_z(self, z):
+        delta_z = z - self.z
+        k_z = delta_z / self.dz
+
+        new_x = self.x + k_z * self.dx
+        new_y = self.y + k_z * self.dy
+
+        return new_x, new_y
+
     def y_on_x(self, x):
         return (x - self.x) / self.dx * self.dy + self.y
 

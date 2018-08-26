@@ -13,7 +13,7 @@ class Configuration():
         AVG_DET_GEOM_DF: "dataframes/data_files/avg_by_rp_and_direction.csv",
         GEOM_RP_DF: "dataframes/data_files/geom_rp.csv",
         GEOM_SILICON_DF: "dataframes/data_files/geom_silicon.csv",
-        HIT_LINES_DF: "dataframes/data_files/hit_lines_18ev.csv"   # to be changed - for now it only contains 18 events
+        HIT_LINES_DF: "dataframes/data_files/hit_lines.csv"   # to be changed - for now it only contains 18 events
     }
 
     @staticmethod

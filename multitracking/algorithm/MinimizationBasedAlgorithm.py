@@ -30,8 +30,8 @@ class MinimizationBasedAlgorithm(MultitrackingAlgorithm):
 
     def run(self):
         for event_id, group_id in self.event_group_list:
-            if event_id > 5:
-                break
+            # if event_id > 5:
+            #     break
 
             print("event: {} group: {}".format(event_id, group_id))
             track_record = self.compute_track_record(event_id, group_id)
