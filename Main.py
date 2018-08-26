@@ -30,13 +30,3 @@ compare_df.to_csv('compare_ALL_least_sqare_honza_df.csv')
 
 print("The end")
 
-'''
-Now I want to compare differences between honza and my lines:
-event_id, group_id, rp_id -->
-
-Need to count what is
-    x, y
-on particular z --> on RP z
-'''
-
-
