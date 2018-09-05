@@ -111,7 +111,7 @@ def get_combinations(fitting_rps, multi_lines_dict):
         [(125, 'u', 1), (125, 'v', 1), (105, 'u', 1), (105, 'v', 1)]
         [(125, 'u', 1), (125, 'v', 1), (105, 'u', 1), (105, 'v', 2)]
 
-        Note that 125 with min number of combinations is in
+        Note that 125 with min number of combinations is in first two columns
 
     '''
 
