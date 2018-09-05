@@ -20,6 +20,10 @@ class LeastSquaresBasedAlgorithm(MultitrackingAlgorithm):
         self.track_df_provider = TrackDfProvider.get_track_df_provider()
         self.setup_event_group_list()
 
+
+    ###################
+    # SINGLE TRACKING #
+    ###################
     def setup_event_group_list(self):
         self.event_group_list = []
         single_uv_lines_df = self.df_repository.get(Configuration.HIT_LINES_SINGLE_3RP_DF)
