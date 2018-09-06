@@ -1,9 +1,9 @@
 from multitracking.algorithm.Combinatorics import *
+from multitracking.algorithm.Fitting import *
 from multitracking.algorithm.MultitrackingAlgorithm import MultitrackingAlgorithm
 from multitracking.algorithm.OptimizationConfig import *
 from multitracking.algorithm.HitLinesProvider import *
 from multitracking.algorithm.SolutionNormalizator import *
-from multitracking.track_dataframes.TrackRecord import *
 from multitracking.track_dataframes.TrackDfProvider import *
 from dataframes.DfRepositoryProvider import *
 from dataframes.Configuration import *
@@ -50,7 +50,7 @@ class LeastSquaresMultitrackingAlgorithm(MultitrackingAlgorithm):
 
     def run_multitrack(self, event_id, group_id):
         '''
-        DATA PREPARATION
+        multi_lines_dict
         {
             rp_id {
                 u_direction {
@@ -65,45 +65,61 @@ class LeastSquaresMultitrackingAlgorithm(MultitrackingAlgorithm):
 
         # COMBINATORICS
         fishing_rp, fitting_rps = get_fishing_fitting_rps(multi_lines_dict)
-        combinations = get_combinations(fitting_rps, multi_lines_dict):
+        combinations = get_combinations(fitting_rps, multi_lines_dict)
+        '''
+        Combinations:
+        [(125, 'u', 0), (125, 'v', 0), (105, 'u', 0), (105, 'v', 0)]
+        ...
+        [(125, 'u', 0), (125, 'v', 0), (105, 'u', 0), (105, 'v', 1)]
+        '''
 
         # FITTING
+        multi_track_records = []
+        for combination in combinations:
+            multi_track_record = compute_track_record(event_id, group_id, combination, multi_lines_dict)
+            multi_track_records.append(multi_track_record)
 
         '''
-        Here I want:
-            - for each combination from combinations:
-                - get lines to fit track to
-                - fit track
-                - store result (scipy.optimize.least_squares.solution)
+        Multitrack records:
+        [MultiTrackRecord(event_id, group_id, combination, hit_lines, solution, method, exec_time)]
         '''
+
+        ###############################################
+        # REMEMBER TO DO TRACK AND HITS NORMALIZATION #
+        ###############################################
 
         # FISHING
 
         '''
-        Assume we have rp 125 with following combinations:
-            [(125, 'u', 0), (125, 'v', 0)]
-            [(125, 'u', 0), (125, 'v', 1)]
-            [(125, 'u', 1), (125, 'v', 0)]
-            [(125, 'u', 1), (125, 'v', 1)]
+        Target:
 
-        and rp 105 with following combinations:
-            [(105, 'u', 0), (105, 'v', 0)]
-            [(105, 'u', 0), (105, 'v', 1)]
-            [(105, 'u', 0), (105, 'v', 2)]
-            [(105, 'u', 1), (105, 'v', 0)]
-            [(105, 'u', 1), (105, 'v', 1)]
-            [(105, 'u', 1), (105, 'v', 2)]
-
-        For each combination of rp125 and rp105 we store solution of fitting
-        Now,
-        Choose for each combination in rp125 choose one from rp105 where fitting gave best result ---> we will have 4 potential tracks
-
-        Do fishing in rp 121 (3rd one)
-
-            Two ways:
-               1. Count points of intersection of u v lines. Set threshold where should track pass crossing point.
-               2.  Count best fitting :)
+        {
+            multi_track_record_idx:
+            {
+                'fit_result' : FittingResult,
+                'u': {
+                        line_no : FittingResult (FittingResult tylko do hit_lines-ów z line_no)
+                    }
+                'v' : {
+                        line_no : fitting_result (FittingResult tylko do hit_lines-ów z line_no)
+                    }
+            }
+        }
         '''
+
+        # Odsiej te, tracki, które odstają o wiecej niż 10% od best fit (arguable)
+        # Nie bede robil fittingu ... to mnie zarżnie :(
+        # Zrobimy tak :) Mamy linie to wylawiaj w garnku fishing
+
+        '''
+        Umiej wybierac best fitty :)
+        '''
+
+        # THIS IS NOT OUR CASE
+        # hit_point_candidates = get_hit_point_candidates(fishing_rp, multi_lines_dict)
+
+
+
 
     def compute_track_record(self, event_id, group_id):
         global HIT_LINES
