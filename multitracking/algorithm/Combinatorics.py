@@ -7,8 +7,10 @@ U_DIRECTION = 'u'
 def rp_with_max_combination(rp_combinations):
     return max(rp_combinations, key=lambda x :rp_combinations[x])
 
+
 def rp_with_min_combination(rp_combinations):
     return min(rp_combinations, key=lambda x :rp_combinations[x])
+
 
 def get_fitting_rps(rp_combinations):
     fitting_rps = list(rp_combinations)
@@ -22,6 +24,7 @@ def get_fitting_rps(rp_combinations):
     fitting_rps = [min_combi_rp] + fitting_rps
 
     return fitting_rps
+
 
 def get_fishing_fitting_rps(multi_lines_dict):
     rp_combinations = {}
@@ -43,11 +46,11 @@ def get_fishing_fitting_rps(multi_lines_dict):
 def generate_rp_combinations(rp_id, multi_lines_dict):
     combinations = []
 
-    u_lines_no = len(multi_lines_dict[rp_id][U_DIRECTION])
-    v_lines_no = len(multi_lines_dict[rp_id][V_DIRECTION])
+    u_lines_numbers = list(multi_lines_dict[rp_id][U_DIRECTION])
+    v_lines_numbers = list(multi_lines_dict[rp_id][V_DIRECTION])
 
-    for u_idx in range(u_lines_no):
-        for v_idx in range(v_lines_no):
+    for u_idx in u_lines_numbers:
+        for v_idx in v_lines_numbers:
             u_tuple = (rp_id, U_DIRECTION, u_idx)
             v_tuple = (rp_id, V_DIRECTION, v_idx)
             combinations.append([u_tuple, v_tuple])
@@ -80,36 +83,28 @@ def get_combinations(fitting_rps, multi_lines_dict):
     :return:
     Example
 
-        rp_combinations: {105: 6, 125: 4, 121: 20}
+        rp_combinations: {105: 4, 125: 4, 121: 16}
         fitting_rps: [125, 105]
 
         125: 2 x u_lines, 2 x v_lines
-        105: 2 x u_lines, 3 x v_lines
+        105: 2 x u_lines, 2 x v_lines
 
-        [(125, 'u', 0), (125, 'v', 0), (105, 'u', 0), (105, 'v', 0)]
-        [(125, 'u', 0), (125, 'v', 0), (105, 'u', 0), (105, 'v', 1)]
-        [(125, 'u', 0), (125, 'v', 0), (105, 'u', 0), (105, 'v', 2)]
-        [(125, 'u', 0), (125, 'v', 0), (105, 'u', 1), (105, 'v', 0)]
-        [(125, 'u', 0), (125, 'v', 0), (105, 'u', 1), (105, 'v', 1)]
-        [(125, 'u', 0), (125, 'v', 0), (105, 'u', 1), (105, 'v', 2)]
-        [(125, 'u', 0), (125, 'v', 1), (105, 'u', 0), (105, 'v', 0)]
-        [(125, 'u', 0), (125, 'v', 1), (105, 'u', 0), (105, 'v', 1)]
-        [(125, 'u', 0), (125, 'v', 1), (105, 'u', 0), (105, 'v', 2)]
-        [(125, 'u', 0), (125, 'v', 1), (105, 'u', 1), (105, 'v', 0)]
-        [(125, 'u', 0), (125, 'v', 1), (105, 'u', 1), (105, 'v', 1)]
-        [(125, 'u', 0), (125, 'v', 1), (105, 'u', 1), (105, 'v', 2)]
-        [(125, 'u', 1), (125, 'v', 0), (105, 'u', 0), (105, 'v', 0)]
-        [(125, 'u', 1), (125, 'v', 0), (105, 'u', 0), (105, 'v', 1)]
-        [(125, 'u', 1), (125, 'v', 0), (105, 'u', 0), (105, 'v', 2)]
-        [(125, 'u', 1), (125, 'v', 0), (105, 'u', 1), (105, 'v', 0)]
-        [(125, 'u', 1), (125, 'v', 0), (105, 'u', 1), (105, 'v', 1)]
-        [(125, 'u', 1), (125, 'v', 0), (105, 'u', 1), (105, 'v', 2)]
-        [(125, 'u', 1), (125, 'v', 1), (105, 'u', 0), (105, 'v', 0)]
-        [(125, 'u', 1), (125, 'v', 1), (105, 'u', 0), (105, 'v', 1)]
-        [(125, 'u', 1), (125, 'v', 1), (105, 'u', 0), (105, 'v', 2)]
-        [(125, 'u', 1), (125, 'v', 1), (105, 'u', 1), (105, 'v', 0)]
-        [(125, 'u', 1), (125, 'v', 1), (105, 'u', 1), (105, 'v', 1)]
-        [(125, 'u', 1), (125, 'v', 1), (105, 'u', 1), (105, 'v', 2)]
+        [(105, 'u', 0), (105, 'v', 0), (125, 'u', 0), (125, 'v', 0)]
+        [(105, 'u', 0), (105, 'v', 0), (125, 'u', 0), (125, 'v', 1)]
+        [(105, 'u', 0), (105, 'v', 0), (125, 'u', 1), (125, 'v', 0)]
+        [(105, 'u', 0), (105, 'v', 0), (125, 'u', 1), (125, 'v', 1)]
+        [(105, 'u', 0), (105, 'v', 1), (125, 'u', 0), (125, 'v', 0)]
+        [(105, 'u', 0), (105, 'v', 1), (125, 'u', 0), (125, 'v', 1)]
+        [(105, 'u', 0), (105, 'v', 1), (125, 'u', 1), (125, 'v', 0)]
+        [(105, 'u', 0), (105, 'v', 1), (125, 'u', 1), (125, 'v', 1)]
+        [(105, 'u', 1), (105, 'v', 0), (125, 'u', 0), (125, 'v', 0)]
+        [(105, 'u', 1), (105, 'v', 0), (125, 'u', 0), (125, 'v', 1)]
+        [(105, 'u', 1), (105, 'v', 0), (125, 'u', 1), (125, 'v', 0)]
+        [(105, 'u', 1), (105, 'v', 0), (125, 'u', 1), (125, 'v', 1)]
+        [(105, 'u', 1), (105, 'v', 1), (125, 'u', 0), (125, 'v', 0)]
+        [(105, 'u', 1), (105, 'v', 1), (125, 'u', 0), (125, 'v', 1)]
+        [(105, 'u', 1), (105, 'v', 1), (125, 'u', 1), (125, 'v', 0)]
+        [(105, 'u', 1), (105, 'v', 1), (125, 'u', 1), (125, 'v', 1)]
 
         Note that 125 with min number of combinations is in first two columns
 

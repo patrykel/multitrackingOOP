@@ -39,10 +39,10 @@ def get_det_z_translated(det_id):
     plane_info = get_plane_info(det_id)
 
     plane_z_mm = plane_info['z'] * 1000
-    plane_z_translated = plane_z_mm - HitLinesProviderConfig.LOWEST_ABS_SILICON_Z
+    plane_z_translated = plane_z_mm - HitLinesProviderConfig.LOWEST_ABS_SILICON_Z_MM
 
     return plane_z_translated + HitLinesProviderConfig.ADDITIONAL_TRANSLATION * \
-                                np.sign(HitLinesProviderConfig.LOWEST_ABS_SILICON_Z)
+                                np.sign(HitLinesProviderConfig.LOWEST_ABS_SILICON_Z_MM)
 
 
 def get_track_silicon_hit_point(det_id, track_line):

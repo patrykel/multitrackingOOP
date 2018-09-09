@@ -34,7 +34,7 @@ class SolutionNormalizator:
             x, y, dx, dy, dz = solution.x
 
             additional_translation = HitLinesProviderConfig.ADDITIONAL_TRANSLATION \
-                                     * np.sign(HitLinesProviderConfig.LOWEST_ABS_SILICON_Z)
+                                     * np.sign(HitLinesProviderConfig.LOWEST_ABS_SILICON_Z_MM)
 
             k_z = additional_translation / dz
 

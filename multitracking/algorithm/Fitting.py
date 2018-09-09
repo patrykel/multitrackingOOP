@@ -6,7 +6,6 @@ import time
 
 HIT_LINES = []
 
-
 def get_arm_id():
     return int(HIT_LINES[0].silicon_id / 1000)
 

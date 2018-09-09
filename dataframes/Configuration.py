@@ -15,7 +15,8 @@ class Configuration():
         GEOM_RP_DF: "dataframes/data_files/geom_rp.csv",
         GEOM_SILICON_DF: "dataframes/data_files/geom_silicon.csv",
         HIT_LINES_DF: "dataframes/data_files/hit_lines.csv",
-        MULTI_TRACK_DF: "dataframes/data_files/2015_10_17_fill4510_reco0_multi.csv"
+        MULTI_TRACK_DF: "dataframes/data_files/multi_sample.csv"
+        #"dataframes/data_files/2015_10_17_fill4510_reco0_multi.csv"
     }
 
     @staticmethod

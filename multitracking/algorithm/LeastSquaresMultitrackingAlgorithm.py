@@ -1,5 +1,6 @@
 from multitracking.algorithm.Combinatorics import *
 from multitracking.algorithm.Fitting import *
+from multitracking.algorithm.Fishing import *
 from multitracking.algorithm.MultitrackingAlgorithm import MultitrackingAlgorithm
 from multitracking.algorithm.OptimizationConfig import *
 from multitracking.algorithm.HitLinesProvider import *
@@ -27,16 +28,23 @@ class LeastSquaresMultitrackingAlgorithm(MultitrackingAlgorithm):
             for group_id in event_df.groupID.unique():
                 self.event_group_list.append(tuple([event_id, group_id]))
 
+
+
+
     def run(self):
         for event_id, group_id in self.event_group_list:
             # if event_id > 5:
             #     break
 
-            group_hits = self.get_group_hits(event_id, group_id)
+            group_df = self.get_group_hits(event_id, group_id)  # THESE WILL BE TAKEN ALL FOR RECONSTRUCTION
+            # OK DOLINO MUMINKOW...
+            # JEZELI CHCEMY TUTAJ SIE BAWIC TO NAJPIERW USTAWIAMY
+            self.set_lowest_abs_silicon_z_mm(group_df)
 
-            if this_is_multitrack(group_hits):
-                print("event: {} group: {} MULTI".format(event_id, group_id))
-                self.run_multitrack(event_id, group_id)
+
+            if this_is_multitrack(group_df):
+                print("event: {} group: {} MULTI".format(event_id, group_id, group_df))
+                self.run_multitrack(event_id, group_id, group_df)
             else:
                 print("event: {} group: {} SINGLE".format(event_id, group_id))
                 self.run_single_track(event_id, group_id)
@@ -45,10 +53,15 @@ class LeastSquaresMultitrackingAlgorithm(MultitrackingAlgorithm):
             self.track_df_provider.add_track_df_row(track_record, HIT_LINES)
 
     def get_group_hits(self, event_id, group_id):
-        return self.multitrack_df[(self.multitrack_df['eventID'] == event_id) &
-                                  (self.multitrack_df['groupID'] == group_id)]
+        group_df =  self.multitrack_df[(self.multitrack_df['eventID'] == event_id) &
+                                       (self.multitrack_df['groupID'] == group_id)]
+        # Remove lines which have very different position (HEURISTIC :))
+        idxs_to_drop = get_idxs_to_drop(group_df)
+        return group_df.drop(idxs_to_drop)
 
-    def run_multitrack(self, event_id, group_id):
+    def run_multitrack(self, event_id, group_id, group_df):
+
+
         '''
         multi_lines_dict
         {
@@ -59,7 +72,8 @@ class LeastSquaresMultitrackingAlgorithm(MultitrackingAlgorithm):
             }
         }
         '''
-        multi_lines_dict = self.hit_lines_provider.provide_multitrack_lines_dict(event_id, group_id)
+        # Ok we need to get better lines  --> investigate it.. Be couragous
+        multi_lines_dict = self.hit_lines_provider.provide_multitrack_lines_dict(event_id, group_id, group_df)
         if len(list(multi_lines_dict)) < 3:
             print("To few RPs... 3 required :(")
 
@@ -90,9 +104,11 @@ class LeastSquaresMultitrackingAlgorithm(MultitrackingAlgorithm):
 
         # FISHING
 
-        '''
-        Target:
+        # Decide which multitrack to decline (Optional)
+        fishing_dictionary = create_fishing_dictionary(fishing_rp, multi_track_records, multi_lines_dict)
 
+        '''
+        fishing dictionary
         {
             multi_track_record_idx:
             {
@@ -107,19 +123,11 @@ class LeastSquaresMultitrackingAlgorithm(MultitrackingAlgorithm):
         }
         '''
 
-        # Odsiej te, tracki, które odstają o wiecej niż 10% od best fit (arguable)
-        # Nie bede robil fittingu ... to mnie zarżnie :(
-        # Zrobimy tak :) Mamy linie to wylawiaj w garnku fishing
-
-        '''
-        Umiej wybierac best fitty :)
-        '''
-
-        # THIS IS NOT OUR CASE
-        # hit_point_candidates = get_hit_point_candidates(fishing_rp, multi_lines_dict)
-
-
-
+    def set_lowest_abs_silicon_z_mm(self, group_df):
+        lowest_silicon_id = get_lowest_silicon_id(group_df)
+        geom_silicon_df = self.df_repository.get(Configuration.GEOM_SILICON_DF)
+        silicon_info = geom_silicon_df[(geom_silicon_df['detId'] == lowest_silicon_id)].iloc[0]
+        HitLinesProviderConfig.LOWEST_ABS_SILICON_Z_MM = silicon_info['z'] * 1000
 
     def compute_track_record(self, event_id, group_id):
         global HIT_LINES
@@ -170,8 +178,27 @@ def this_is_multitrack(group_hits):
     return multi_df.size > 0
 
 
+def get_idxs_to_drop(group_df):
+    idxs_to_drop = []
+    for rp_id in group_df.rpID.unique():
+        rp_df = group_df.loc[group_df['rpID'] == rp_id]
+        for direction in rp_df.direction.unique():
+            direction_df = rp_df.loc[rp_df['direction'] == direction]
+            for line_no in direction_df.line_no.unique():
+                line_df = direction_df.loc[direction_df['line_no'] == line_no]
+
+                max_position = line_df.position.max()
+                min_position = line_df.position.min()
+
+                if (max_position - min_position > 1.0):
+                    idxs_to_drop = idxs_to_drop + line_df.index.tolist()
+
+    return idxs_to_drop
 
 
+def get_lowest_silicon_id(group_df):
+    min_rp_id = group_df.rpID.min()
+    rp_df = group_df[(group_df['rpID'] == min_rp_id)]
+    min_silicon_id = rp_df.siliconID.min()
 
-
-
+    return min_rp_id * 10 + min_silicon_id

@@ -28,15 +28,11 @@ class HitLinesProvider:
     ##################
     # MULTI TRACKING #
     ##################
-    def provide_multitrack_lines_dict(self, event_id, group_id):
-        current_multi_hits_df = self.extract_multi_df(event_id, group_id)
+    def provide_multitrack_lines_dict(self, event_id, group_id, group_df):
+        current_multi_hits_df = group_df
         hit_lines_dict = self.create_hit_lines_dict(current_multi_hits_df)
         self.apply_dict_lines_transformations(hit_lines_dict)
         return hit_lines_dict
-
-    def extract_multi_df(self, event_id, group_id):
-        return self.multi_track_df[(self.multi_track_df['eventID'] == event_id) &
-                                   (self.multi_track_df['groupID'] == group_id)]
 
     def lines_dictionary(self, rp_id, direction, group_hits_df):
         rp_dir_hits_df = group_hits_df.loc[(group_hits_df['rpID'] == rp_id) & (group_hits_df['direction'] == direction)]
@@ -46,7 +42,7 @@ class HitLinesProvider:
             rp_lines_dict[line_no] = []
 
         for i, hit_info in rp_dir_hits_df.iterrows():
-            silicon_id = hit_info['siliconID']
+            silicon_id = hit_info['rpID'] * 10 + hit_info['siliconID'] # watch out - it is only the last digit -- we need to append rpID
             silicon_info = self.extract_silicon_info(silicon_id)
 
             line_no = hit_info['line_no']
@@ -118,12 +114,10 @@ class HitLinesProvider:
                 line.z = line.z * 1000
 
         if HitLinesProviderConfig.TRANSLATE_LINES:
-            set_lowest_abs_silicon_z(hit_lines)
-
             for line in hit_lines:
-                line.z = line.z - HitLinesProviderConfig.LOWEST_ABS_SILICON_Z
+                line.z = line.z - HitLinesProviderConfig.LOWEST_ABS_SILICON_Z_MM
                 line.z = line.z + HitLinesProviderConfig.ADDITIONAL_TRANSLATION * \
-                                  np.sign(HitLinesProviderConfig.LOWEST_ABS_SILICON_Z)  # +/- 1
+                                  np.sign(HitLinesProviderConfig.LOWEST_ABS_SILICON_Z_MM)  # +/- 1
 
     def normalize(self, hit_lines):
         # For each hit_line, set z = line's related silicon z coordinate (in mm)
@@ -169,7 +163,3 @@ def hit_line_dy(silicon_info):
 
 def hit_line_dz():
     return 0.0
-
-
-def set_lowest_abs_silicon_z(hit_lines):
-    HitLinesProviderConfig.LOWEST_ABS_SILICON_Z = min([line.z for line in hit_lines], key=abs)

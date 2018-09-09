@@ -25,7 +25,7 @@ class TrackProviderDfUtility:
     @staticmethod
     def get_distances(solution, hit_lines):
         # We assume that our track begins on z = LOWEST_ABS_SILICON_Z
-        track = Line(params=solution.x, z=HitLinesProviderConfig.LOWEST_ABS_SILICON_Z)
+        track = Line(params=solution.x, z=HitLinesProviderConfig.LOWEST_ABS_SILICON_Z_MM)
         return [track.distance(line) for line in hit_lines]
 
     @staticmethod
@@ -42,7 +42,7 @@ class TrackProviderDfUtility:
     @staticmethod
     def get_chi2(solution, hit_lines):
         # We assume that our track begins on z = LOWEST_ABS_SILICON_Z
-        track = Line(params=solution.x, z=HitLinesProviderConfig.LOWEST_ABS_SILICON_Z)
+        track = Line(params=solution.x, z=HitLinesProviderConfig.LOWEST_ABS_SILICON_Z_MM)
         return sum([(track.distance(hit_line) / SIGMA) ** 2 for hit_line in hit_lines])  # SUM OF DISTANCES
 
     @staticmethod
@@ -56,7 +56,7 @@ class TrackProviderDfUtility:
 
         if len(solution.x) == 5:
             x, y, dx, dy, dz = solution.x
-            z = HitLinesProviderConfig.LOWEST_ABS_SILICON_Z  # Cause we normalized solution!
+            z = HitLinesProviderConfig.LOWEST_ABS_SILICON_Z_MM  # Cause we normalized solution!
         elif len(solution.x) == 6:
             x, y, z, dx, dy, dz = solution.x
 
